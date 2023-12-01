@@ -91,3 +91,6 @@ services:
       ports:
           - 5672:5672  # AMQP
           - 15672:15672  # Web UI
+      volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
