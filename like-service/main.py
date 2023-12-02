@@ -24,7 +24,7 @@ class CreatePage(BaseModel):
 def create_page(body: CreatePage):
     cur = pg_conn.cursor()
     new_page = cur.execute("INSERT INTO pages (title, body) VALUES (%s, %s) RETURNING id", (body.title, body.body))
-    cur.execute("INSERT INTO likes (page_id, likes) VALUES (%s, %s)", (new_page, 0))
+    cur.execute("INSERT INTO likes (page_id, likes_count) VALUES (%s, %s)", (new_page, 0))
     pg_conn.commit()
     return {"message": "Page created!"}
 
