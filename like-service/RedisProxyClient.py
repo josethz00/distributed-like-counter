@@ -18,6 +18,7 @@ class RedisProxyClient:
             return response.decode('utf-8')
         except Exception as e:
             print(f"Error: {e}")
+            raise e
         finally:
             self.close()
 
