@@ -39,4 +39,17 @@ async def get_pages():
     cur = pg_conn.cursor()
     cur.execute("SELECT * FROM pages JOIN likes ON pages.id = likes.page_id")
     pages = cur.fetchall()
-    return {"pages": pages}
+    pages_json = []
+
+    for page in pages:
+        print(page)
+        page_json = {
+            "id": page[0],
+            "title": page[1],
+            "body": page[2],
+            "likes_count": page[7],
+            "created_at": page[3]
+        }
+        pages_json.append(page_json)
+
+    return {"pages": pages_json}
