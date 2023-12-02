@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from RedisProxyClient import RedisProxyClient
 import psycopg2
+from pydantic import BaseModel
 
 
 pg_conn = psycopg2.connect(
@@ -13,12 +14,17 @@ pg_conn = psycopg2.connect(
 
 app = FastAPI()
 
-redis_proxy_client = RedisProxyClient('localhost', 6379)
+redis_proxy_client = RedisProxyClient('redis-proxy', 6379)
+
+class CreatePage(BaseModel):
+    title: str
+    body: str
 
 @app.post("/page")
-def create_page():
+def create_page(body: CreatePage):
     cur = pg_conn.cursor()
-    cur.execute("INSERT INTO pages (title, body) VALUES ('My Page', 'This is my page.')")
+    new_page = cur.execute("INSERT INTO pages (title, body) VALUES (%s, %s) RETURNING id", (body.title, body.body))
+    cur.execute("INSERT INTO likes (page_id, likes) VALUES (%s, %s)", (new_page, 0))
     pg_conn.commit()
     return {"message": "Page created!"}
 
