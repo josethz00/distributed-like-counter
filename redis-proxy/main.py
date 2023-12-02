@@ -2,9 +2,8 @@ import socket
 import random
 import redis
 
-
 def is_write_operation(command):
-    write_ops = ['set', 'del', 'lpush']
+    write_ops = ['set', 'del', 'lpush', 'incr', 'decr']
     return any(op in command.lower() for op in write_ops)
 
 def process_request(client_socket, redis_connections):
@@ -25,11 +24,11 @@ def process_request(client_socket, redis_connections):
 def start_proxy_server(host, port, redis_leader, redis_followers):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
-    server_socket.listen(5)
+    server_socket.listen(10)
 
     redis_connections = {
         'leader': redis.Redis(host=redis_leader, port=6379),
-        'followers': [redis.Redis(host=host, port=6379) for host in redis_followers]
+        'followers': [redis.Redis(host=h, port=6379) for h in redis_followers]
     }
 
     print(f"Redis proxy running on {host}:{port}")
@@ -42,4 +41,5 @@ def start_proxy_server(host, port, redis_leader, redis_followers):
 if __name__ == "__main__":
     REDIS_LEADER = 'redis-leader'
     REDIS_FOLLOWERS = ['redis-follower-1', 'redis-follower-2', 'redis-follower-3']
-    start_proxy_server('localhost', 6379, REDIS_LEADER, REDIS_FOLLOWERS)
+    start_proxy_server('0.0.0.0', 6379, REDIS_LEADER, REDIS_FOLLOWERS)
+
