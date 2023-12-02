@@ -34,6 +34,7 @@ async def like(page_id: int):
     redis_proxy_client.send_command(f"INCR page:{page_id}:likes")
     return {"message": f"Like page {page_id}!"}
 
+# mudar para buscar do cache
 @app.get("/pages")
 async def get_pages():
     cur = pg_conn.cursor()
