@@ -33,3 +33,10 @@ def create_page(body: CreatePage):
 async def like(page_id: int):
     redis_proxy_client.send_command(f"INCR page:{page_id}:likes")
     return {"message": f"Like page {page_id}!"}
+
+@app.get("/pages")
+async def get_pages():
+    cur = pg_conn.cursor()
+    cur.execute("SELECT * FROM pages JOIN likes ON pages.id = likes.page_id")
+    pages = cur.fetchall()
+    return {"pages": pages}
