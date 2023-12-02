@@ -8,4 +8,6 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./main.py /code/main.py
 
+ENV PYTHONUNBUFFERED=1
+
 CMD ["python3", "/code/main.py"]
