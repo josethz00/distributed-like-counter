@@ -34,6 +34,7 @@ def start_proxy_server(host, port, redis_leader, redis_followers):
     print(f"Redis proxy running on {host}:{port}")
 
     while True:
+        # separar as conexões em threads (TODO)
         client_socket, addr = server_socket.accept()
         print(f"Connection from {addr}")
         process_request(client_socket, redis_connections)
