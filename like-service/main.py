@@ -56,12 +56,13 @@ async def get_pages():
     pages_json = []
 
     for page in pages:
-        print(page)
+        likes_response = redis_proxy_client.send_command(f"GET page:{page[0]}:likes")
+        likes_count = float(likes_response)
         page_json = {
             "id": page[0],
             "title": page[1],
             "body": page[2],
-            "likes_count": page[7],
+            "likes_count": likes_count,
             "created_at": page[3]
         }
         pages_json.append(page_json)
