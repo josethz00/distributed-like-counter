@@ -19,8 +19,7 @@ def process_request(client_socket, redis_connections):
             follower = random.choice(redis_connections['followers'])
             response = follower.execute_command(command)
 
-        client_socket.send(bytes(response))
-
+        client_socket.send(response if response else b'0')
 def start_proxy_server(host, port, redis_leader, redis_followers):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
