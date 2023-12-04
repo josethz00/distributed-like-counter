@@ -116,6 +116,18 @@ services:
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
       networks:
         - my-network
+  redis-event-listener:
+    build: ./redis-event-listener
+    depends_on:
+      - redis-leader
+      - rabbitmq
+    environment:
+      - REDIS_HOST=redis-leader
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+    networks:
+      - my-network
 
 networks:
   my-network:
