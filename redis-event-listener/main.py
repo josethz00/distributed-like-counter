@@ -9,9 +9,5 @@ for message in redis_subscriber.listen():
         channel = message['channel'].decode('utf-8')
         page_id = channel.split(':')[1]
 
-        print(message['data'], flush=True)
-
-        likes_count = redis_conn.get(f'page:{page_id}:likes')
-        if likes_count:
-            likes_count = likes_count.decode('utf-8')
+        likes_count = int(message['data'].decode('utf-8'))
         print(f'Page {page_id} has {likes_count} likes', flush=True)
