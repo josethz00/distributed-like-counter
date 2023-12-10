@@ -7,10 +7,10 @@ channel.queue_declare(queue='likes-db-writer')
 
 def callback(ch, method, properties, body):
     print(" [x] Received %r" % body)
+    ch.basic_ack(delivery_tag = method.delivery_tag)
 
 channel.basic_consume(callback,
-                      queue='likes-db-writer',
-                      no_ack=True)
+                      queue='likes-db-writer')
 
-print(' [*] Waiting for messages. To exit press CTRL+C')
+print(' [*] Waiting for messages.')
 channel.start_consuming()
