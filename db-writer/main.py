@@ -9,6 +9,7 @@ def callback(ch, method, properties, body):
     print(" [x] Received %r" % body)
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
+channel.basic_qos(prefetch_count=1)  # process one message at once, won't pull more if not done with processing
 channel.basic_consume(callback,
                       queue='likes-db-writer')
 
