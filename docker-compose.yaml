@@ -82,8 +82,10 @@ services:
   db-writer:
     build: ./db-writer
     depends_on:
-      - postgres-db
-      - rabbitmq
+      postgres-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
     environment:
       - DATABASE_URL=postgresql://likesdb:likesdb@postgres-db/likesdb
       - RABBITMQ_HOST=rabbitmq
@@ -131,8 +133,10 @@ services:
   redis-event-listener:
     build: ./redis-event-listener
     depends_on:
-      - redis-leader
-      - rabbitmq
+      postgres-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
     environment:
       - REDIS_HOST=redis-leader
       - REDIS_PORT=6379
