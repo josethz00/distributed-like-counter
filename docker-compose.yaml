@@ -79,6 +79,18 @@ services:
     networks:
       - my-network
 
+  db-writer:
+    build: ./db-writer
+    depends_on:
+      - postgres-db
+      - rabbitmq
+    environment:
+      - DATABASE_URL=postgresql://likesdb:likesdb@postgres-db/likesdb
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+    networks:
+      - my-network
+
   nginx:
     image: nginx:alpine
     volumes:
