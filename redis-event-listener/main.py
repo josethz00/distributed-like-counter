@@ -4,7 +4,7 @@ import pika
 redis_conn = redis.Redis('redis-leader', 6379)
 redis_subscriber = redis_conn.pubsub()
 redis_subscriber.psubscribe('page:*:likes')
-rabbitmq_conn = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
+rabbitmq_conn = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq', port=5672))
 rabbitmq_channel = rabbitmq_conn.channel()
 rabbitmq_channel.queue_declare(queue='likes-db-writer')
 
