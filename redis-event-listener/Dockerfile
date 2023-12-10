@@ -4,6 +4,9 @@ WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
 
+RUN apt-get update && apt-get -y dist-upgrade
+RUN apt install -y netcat-traditional
+
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./main.py /code/main.py
