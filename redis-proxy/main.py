@@ -26,6 +26,7 @@ def process_request(client_socket, redis_connections):
         response_byte_str = str(response).encode('utf-8') if response and not isinstance(response, bytes) else response 
 
         client_socket.send(response_byte_str if response_byte_str else b'0')
+        
 def start_proxy_server(host, port, redis_leader, redis_followers):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
