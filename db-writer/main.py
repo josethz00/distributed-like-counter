@@ -21,7 +21,9 @@ while True:
             print(" [x] Received %r" % body)
             page_id, likes_count = body.decode('utf-8').split(':')
             cur = pg_conn.cursor()
+            print(page_id, likes_count)
             cur.execute("UPDATE likes SET likes_count = %s WHERE page_id = %s", (likes_count, page_id))
+            pg_conn.commit()
             cur.close()
             ch.basic_ack(delivery_tag = method.delivery_tag)
 
@@ -35,13 +37,16 @@ while True:
 
     # Do not recover if connection was closed by broker
     except pika.exceptions.ConnectionClosedByBroker:
-        break
+        raise
     # Do not recover on channel errors
     except pika.exceptions.AMQPChannelError:
-        break
+        raise
     # Recover on all other connection errors
     except pika.exceptions.AMQPConnectionError:
         # other exceptions such as StreamLostError and TimeoutError
         # inherit from AMQPConnectionError
         continue
+    except Exception as e:
+        print(e)
+        raise
     
