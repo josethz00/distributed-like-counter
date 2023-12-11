@@ -54,20 +54,23 @@ async def like(page_id: int):
 @app.get("/pages")
 async def get_pages():
     cur = pg_conn.cursor()
-    cur.execute("SELECT * FROM pages JOIN likes ON pages.id = likes.page_id")
-    pages = cur.fetchall()
+    cur.execute("SELECT id FROM pages;")
+    page_ids = cur.fetchall()
     pages_json = []
 
-    for page in pages:
-        likes_response = redis_proxy_client.send_command(f"GET page:{page[0]}:likes")
-        likes_count = int(likes_response)
-        page_json = {
-            "id": page[0],
-            "title": page[1],
-            "body": page[2],
-            "likes_count": likes_count,
-            "created_at": page[3]
-        }
-        pages_json.append(page_json)
+    for page_id in page_ids:
+        page_data = redis_proxy_client.send_command(f"GET page:{page_id}:data")
+        if page_data:
+            title, body = page_data.split('|', 1)
+            likes_response = redis_proxy_client.send_command(f"GET page:{page_id}:likes")
+            likes_count = int(likes_response) if likes_response else 0
+
+            page_json = {
+                "id": page_id,
+                "title": title,
+                "body": body,
+                "likes_count": likes_count
+            }
+            pages_json.append(page_json)
 
     return {"pages": pages_json}
