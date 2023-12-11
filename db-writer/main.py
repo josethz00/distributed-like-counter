@@ -19,6 +19,10 @@ while True:
 
         def callback(ch, method, properties, body):
             print(" [x] Received %r" % body)
+            page_id, likes_count = body.decode('utf-8').split(':')
+            cur = pg_conn.cursor()
+            cur.execute("UPDATE likes SET likes_count = %s WHERE page_id = %s", (likes_count, page_id))
+            cur.close()
             ch.basic_ack(delivery_tag = method.delivery_tag)
 
         # QOS — Quality of Service
