@@ -38,6 +38,10 @@ def create_page(body: CreatePage):
     cur = pg_conn.cursor()
     cur.execute("INSERT INTO pages (title, body) VALUES (%s, %s) RETURNING id", (body.title, body.body))
     new_page_id = cur.fetchone()[0]
+
+    # insert into Redis
+    redis_proxy_client.send_command(f"SET page:{new_page_id}:data {body.title}|{body.body}")
+
     cur.execute("INSERT INTO likes (page_id, likes_count) VALUES (%s, %s)", (new_page_id, 0))
     pg_conn.commit()
     return {"message": "Page created!"}
@@ -47,7 +51,6 @@ async def like(page_id: int):
     redis_proxy_client.send_command(f"INCR page:{page_id}:likes")
     return {"message": f"Like page {page_id}!"}
 
-# mudar para buscar do cache
 @app.get("/pages")
 async def get_pages():
     cur = pg_conn.cursor()
