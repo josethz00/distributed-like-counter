@@ -15,7 +15,10 @@ def process_request(client_socket, redis_connections):
 
         if is_write_operation(command):
             response = redis_connections['leader'].execute_command(command)
-            redis_connections['leader'].execute_command('publish page:' + command.split(':')[1] + ':likes', response)
+            
+            if 'likes' in command:
+                # publish only if it's a like operation
+                redis_connections['leader'].execute_command('publish page:' + command.split(':')[1] + ':likes', response)
         else:
             follower = random.choice(redis_connections['followers'])
             response = follower.execute_command(command)
