@@ -1,4 +1,13 @@
 import pika
+import psycopg2
+
+pg_conn = psycopg2.connect(
+    database="likesdb",
+    user="likesdb",
+    password="likesdb",
+    host="postgres-db",
+    port=5432
+)
 
 while True:
     try:
