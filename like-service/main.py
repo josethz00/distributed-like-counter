@@ -58,7 +58,6 @@ async def get_pages():
     for page in pages:
         likes_response = redis_proxy_client.send_command(f"GET page:{page[0]}:likes")
         likes_count = int(likes_response)
-        print('likes in postgres: ', cur.execute("SELECT likes_count FROM likes WHERE page_id = %s", (page[0],)))
         page_json = {
             "id": page[0],
             "title": page[1],
