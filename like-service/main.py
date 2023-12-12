@@ -58,12 +58,11 @@ async def get_pages():
     page_ids = cur.fetchall()
     pages_json = []
 
-    print('aaaaaaa')
 
     for page_id in page_ids:
         page_data = redis_proxy_client.send_command(f"GET page:{page_id[0]}:data")
+        
         if page_data:
-            print('page data', page_data)
             title, body = page_data.split('|')
             likes_response = redis_proxy_client.send_command(f"GET page:{page_id[0]}:likes")
             likes_count = int(likes_response) if likes_response else 0

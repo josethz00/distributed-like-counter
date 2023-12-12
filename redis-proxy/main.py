@@ -22,8 +22,6 @@ def process_request(client_socket, redis_connections):
         else:
             follower = random.choice(redis_connections['followers'])
             response = follower.execute_command(command)
-            print(command)
-            print(response)
 
         response_byte_str = str(response).encode('utf-8') if response and not isinstance(response, bytes) else response 
 
